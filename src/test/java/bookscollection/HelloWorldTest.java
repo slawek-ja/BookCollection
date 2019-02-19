@@ -1,20 +1,20 @@
 package bookscollection;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class HelloWorldTest {
 
-    @Test
-    void shouldReturnValidString() {
-        //given
-        String expected = "Hello World";
+  @Test
+  void shouldReturnValidString() {
+    //given
+    String expected = "Hello World";
 
-        //when
-        String result = HelloWorld.returnHelloWorld();
+    //when
+    String result = HelloWorld.returnHelloWorld();
 
-        //then
-        assertEquals(expected, result);
-    }
+    //then
+    assertEquals(expected, result);
+  }
 }
