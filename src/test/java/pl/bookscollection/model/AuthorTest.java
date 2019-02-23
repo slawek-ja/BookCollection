@@ -1,5 +1,6 @@
 package pl.bookscollection.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -17,6 +18,23 @@ class AuthorTest {
 
     //then
     assertNotNull(author);
+  }
+
+  @Test
+  void shouldGetValidValuesFromClass() {
+    //given
+    String expectedName = "Steve";
+    String expectedLastName = "Fox";
+    Author author = new Author(expectedName, expectedLastName);
+
+    //when
+    String nameResult = author.getName();
+    String lastNameResult = author.getLastName();
+
+
+    //then
+    assertEquals(expectedName, nameResult);
+    assertEquals(expectedLastName, lastNameResult);
   }
 
   @Test
