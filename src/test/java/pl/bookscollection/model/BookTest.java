@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 class BookTest {
 
   @Test
-  void shouldInvokeClass() {
+  void shouldInvokeClassWithoutId() {
     //given
     Author author = new Author("Steve", "Fox");
     Cover cover = Cover.HARD;
     Book book;
 
     //when
-    book = new Book(1, "Green Woods", cover, author);
+    book = new Book("Green Woods", cover, author);
 
     //then
     assertNotNull(book);
@@ -47,16 +47,16 @@ class BookTest {
 
   @Test
   void shouldThrowNullPointerExceptionWhenTitleIsNull() {
-    assertThrows(NullPointerException.class, () -> new Book(1, null, Cover.HARD, new Author("Steve", "Last")));
+    assertThrows(NullPointerException.class, () -> new Book(null, Cover.HARD, new Author("Steve", "Last")));
   }
 
   @Test
   void shouldThrowNullPointerExceptionWhenCoverIsNull() {
-    assertThrows(NullPointerException.class, () -> new Book(1, "Green Woods", null, new Author("Steve", "Last")));
+    assertThrows(NullPointerException.class, () -> new Book("Green Woods", null, new Author("Steve", "Last")));
   }
 
   @Test
   void shouldThrowNullPointerExceptionWhenAuthorIsNull() {
-    assertThrows(NullPointerException.class, () -> new Book(1, "Green Woods", Cover.SOFT, null));
+    assertThrows(NullPointerException.class, () -> new Book("Green Woods", Cover.SOFT, null));
   }
 }
