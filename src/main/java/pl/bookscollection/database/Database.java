@@ -1,20 +1,21 @@
 package pl.bookscollection.database;
 
-import pl.bookscollection.model.Book;
-
 import java.util.List;
+import pl.bookscollection.model.Book;
 
 public interface Database {
 
   Book save(Book book) throws DatabaseOperationException;
 
-  Book update(Book book) throws DatabaseOperationException;
+  Book findById(long id);
 
-  List<Book> findAll() throws DatabaseOperationException;
+  List<Book> findAll();
 
-  long count() throws DatabaseOperationException;
+  boolean existById(long id);
 
-  void delete(Book book) throws DatabaseOperationException;
+  long count();
 
-  void deleteAll() throws DatabaseOperationException;
+  void deleteById(long id) throws DatabaseOperationException;
+
+  void deleteAll();
 }

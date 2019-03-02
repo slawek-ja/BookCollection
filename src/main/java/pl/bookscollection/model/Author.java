@@ -1,10 +1,10 @@
 package pl.bookscollection.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class Author {
 

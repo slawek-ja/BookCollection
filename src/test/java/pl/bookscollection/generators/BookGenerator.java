@@ -6,7 +6,7 @@ import pl.bookscollection.model.Cover;
 
 public class BookGenerator {
   public static Book getBook() {
-    return new Book(1, "Green woods", Cover.HARD, new Author("Steve", "Fox"));
+    return new Book("Green woods", Cover.HARD, new Author("Steve", "Fox"));
   }
 
   public static Book getBookWithSpecifiedId(long id) {

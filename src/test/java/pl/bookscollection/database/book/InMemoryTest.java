@@ -1,18 +1,21 @@
 package pl.bookscollection.database.book;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.bookscollection.database.Database;
 import pl.bookscollection.database.DatabaseOperationException;
+import pl.bookscollection.generators.BookGenerator;
 import pl.bookscollection.model.Author;
 import pl.bookscollection.model.Book;
-import pl.bookscollection.model.Cover;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 class InMemoryTest {
 
@@ -26,26 +29,136 @@ class InMemoryTest {
   @Test
   void shouldSaveBooks() throws DatabaseOperationException {
     //given
-    Book book = new Book("True story", Cover.HARD, new Author("Arthur", "Mock"));
+    Book book = BookGenerator.getBook();
     List<Book> expected = new ArrayList<>(Collections.singletonList(book));
 
     //when
     database.save(book);
 
     //then
-    assertEquals(database.findAll(), expected);
+    assertEquals(expected, database.findAll());
   }
 
   @Test
-  void shouldUpdateBook() throws DatabaseOperationException {
+  void shouldUpdateExistingBook() throws DatabaseOperationException {
     //given
-    Book book = new Book("True story", Cover.HARD, new Author("Arthur", "Mock"));
-    Book bookUpdate = new Book("False story", Cover.HARD, new Author("Arthur", "Mock"));
-    List<Book> expected = new ArrayList<>(Collections.singletonList(bookUpdate));
+    Book book = BookGenerator.getBook();
+    Author author = new Author("Anna", "Mint");
+    Book expected = BookGenerator.getBookWithSpecifiedAuthor(author);
+    final long expectedDatabaseSize = 1;
 
     //when
     database.save(book);
-//    database.update() needed Id -> Waiting for #8 task
+    expected.setId(book.getId());
+    database.save(expected);
+    Book result = database.findById(expected.getId());
+    long resultSize = database.count();
+
+    //then
+    assertEquals(expected, result);
+    assertEquals(expectedDatabaseSize, resultSize);
   }
 
+  @Test
+  void shouldFindAllBooksInDatabase() throws DatabaseOperationException {
+    //given
+    Book firstBook = BookGenerator.getBook();
+    Book secondBook = BookGenerator.getBook();
+    Book thirdBook = BookGenerator.getBook();
+    database.save(firstBook);
+    database.save(secondBook);
+    database.save(thirdBook);
+    List<Book> expected = new ArrayList<>(Arrays.asList(firstBook, secondBook, thirdBook));
+
+    //when
+    List<Book> result = database.findAll();
+
+    //then
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void shouldFindBookById() throws DatabaseOperationException {
+    //given
+    Book exampleBook = BookGenerator.getBook();
+    Book expected = BookGenerator.getBook();
+    database.save(exampleBook);
+    database.save(expected);
+
+    //when
+    Book result = database.findById(expected.getId());
+
+    //then
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void shouldReturnNullWhenTryingToFindByIdNotExistingBook() {
+    //when
+    Book result = database.findById(10);
+
+    //then
+    assertNull(result);
+  }
+
+  @Test
+  void shouldReturnValidNumberOfBooksInDatabase() throws DatabaseOperationException {
+    //given
+    Book firstBook = BookGenerator.getBook();
+    Book secondBook = BookGenerator.getBook();
+    Book thirdBook = BookGenerator.getBook();
+    database.save(firstBook);
+    database.save(secondBook);
+    database.save(thirdBook);
+    long expected = 3;
+
+    //when
+    long result = database.count();
+
+    //then
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void shouldDeleteBookById() throws DatabaseOperationException {
+    //given
+    Book firstBook = BookGenerator.getBook();
+    Book secondBook = BookGenerator.getBook();
+    Book thirdBook = BookGenerator.getBook();
+    database.save(firstBook);
+    database.save(secondBook);
+    database.save(thirdBook);
+    List<Book> expected = new ArrayList<>(Arrays.asList(firstBook, thirdBook));
+
+    //when
+    database.deleteById(secondBook.getId());
+    List<Book> result = database.findAll();
+
+    //then
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void shouldDeleteAllBooksInDatabase() throws DatabaseOperationException {
+    //given
+    Book firstBook = BookGenerator.getBook();
+    Book secondBook = BookGenerator.getBook();
+    Book thirdBook = BookGenerator.getBook();
+    database.save(firstBook);
+    database.save(secondBook);
+    database.save(thirdBook);
+    long expected = 0;
+
+    //when
+    database.deleteAll();
+    long result = database.count();
+
+    //then
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void shouldThrowDatabaseOperationExceptionWhenTryingToDeleteByIdNotExistingBook() {
+    assertThrows(DatabaseOperationException.class, () -> database.deleteById(1));
+  }
 }
