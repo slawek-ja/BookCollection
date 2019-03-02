@@ -1,10 +1,10 @@
 package pl.bookscollection.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class Book {
 
@@ -15,4 +15,11 @@ public class Book {
   private Cover cover;
   @NonNull
   private Author author;
+
+  public Book(@NonNull String title, @NonNull Cover cover, @NonNull Author author) {
+    this.id = -1;
+    this.title = title;
+    this.cover = cover;
+    this.author = author;
+  }
 }
