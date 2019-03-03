@@ -43,7 +43,8 @@ public class InMemory implements Database {
 
   @Override
   public boolean existById(long id) {
-    return database.stream().anyMatch(book -> book.getId() == id);
+    return database.stream()
+            .anyMatch(book -> book.getId() == id);
   }
 
   @Override
