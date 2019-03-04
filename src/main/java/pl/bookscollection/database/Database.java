@@ -1,9 +1,11 @@
 package pl.bookscollection.database;
 
 import java.util.List;
+
+import org.springframework.data.repository.Repository;
 import pl.bookscollection.model.Book;
 
-public interface Database {
+public interface Database extends Repository<Book, Long> {
 
   Book save(Book book) throws DatabaseOperationException;
 
