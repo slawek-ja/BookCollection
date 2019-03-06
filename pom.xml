@@ -18,6 +18,7 @@
         <jacocoPlugin.version>0.8.2</jacocoPlugin.version>
         <lombok.version>1.18.6</lombok.version>
         <springBootStarter.version>2.1.2.RELEASE</springBootStarter.version>
+        <posgre.version>42.2.5</posgre.version>
     </properties>
 
     <dependencies>
@@ -34,7 +35,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
+            <version>${posgre.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
