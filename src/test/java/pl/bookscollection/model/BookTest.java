@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class BookTest {
 
   @Test
-  void shouldInvokeClassWithoutId() {
+  void shouldInvokeClass() {
     //given
     Author author = new Author("Steve", "Fox");
     Cover cover = Cover.HARD;
@@ -25,21 +25,18 @@ class BookTest {
   @Test
   void shouldGetValidValuesFromClass() {
     //given
-    long expectedId = 1;
     String expectedTitle = "Green Woods";
     Cover expectedCover = Cover.SOFT;
     Author expectedAuthor = new Author("Steve", "Fox");
-    Book book = new Book(expectedId, expectedTitle, expectedCover, expectedAuthor);
+    Book book = new Book(expectedTitle, expectedCover, expectedAuthor);
 
     //when
-    long idResult = book.getId();
     String titleResult = book.getTitle();
     Cover coverResult = book.getCover();
     final Author authorResult = book.getAuthor();
 
 
     //then
-    assertEquals(expectedId, idResult);
     assertEquals(expectedTitle, titleResult);
     assertEquals(expectedCover, coverResult);
     assertEquals(expectedAuthor, authorResult);
