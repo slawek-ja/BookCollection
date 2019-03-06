@@ -10,10 +10,14 @@ public class BookGenerator {
   }
 
   public static Book getBookWithSpecifiedId(long id) {
-    return new Book(id, "Green woods", Cover.HARD, new Author("Steve", "Fox"));
+    Book book = getBook();
+    book.setId(id);
+    return book;
   }
 
   public static Book getBookWithSpecifiedAuthor(Author author) {
-    return new Book(1, "Green woods", Cover.HARD, author);
+    Book book = getBook();
+    book.setAuthor(author);
+    return book;
   }
 }
