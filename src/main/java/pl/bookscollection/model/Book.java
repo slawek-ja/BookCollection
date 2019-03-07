@@ -33,6 +33,7 @@ public class Book {
   private Author author;
 
   public Book(@NonNull String title, @NonNull Cover cover, @NonNull Author author) {
+    this.id = -1;
     this.title = title;
     this.cover = cover;
     this.author = author;
