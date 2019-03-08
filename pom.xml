@@ -19,6 +19,7 @@
         <lombok.version>1.18.6</lombok.version>
         <springBootStarter.version>2.1.2.RELEASE</springBootStarter.version>
         <posgre.version>42.2.5</posgre.version>
+        <h2.version>1.4.197</h2.version>
     </properties>
 
     <dependencies>
@@ -33,9 +34,21 @@
             <version>${springBootStarter.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${springBootStarter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${posgre.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -53,6 +66,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>${junit5.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>2.23.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>

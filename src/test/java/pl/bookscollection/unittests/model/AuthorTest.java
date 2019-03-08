@@ -1,10 +1,11 @@
-package pl.bookscollection.model;
+package pl.bookscollection.unittests.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import pl.bookscollection.model.Author;
 
 class AuthorTest {
 
