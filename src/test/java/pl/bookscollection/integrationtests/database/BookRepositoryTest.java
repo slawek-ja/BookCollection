@@ -1,16 +1,11 @@
-package pl.bookscollection.unittests.database;
+package pl.bookscollection.integrationtests.database;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 import pl.bookscollection.database.BookRepository;
 import pl.bookscollection.generators.BookGenerator;
 import pl.bookscollection.model.Book;
@@ -20,26 +15,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@ExtendWith(MockitoExtension.class)
 @DataJpaTest
+@Rollback
 class BookRepositoryTest {
 
   @Autowired
-  @Mock
   private BookRepository repository;
 
   @Test
   void shouldSaveBook() {
     //given
     Book expected = BookGenerator.getBook();
-    when(repository.save(expected)).thenReturn(expected);
 
     //when
     Book result = repository.save(expected);
+    expected.setId(result.getId());
+    expected.getAuthor().setId(result.getAuthor().getId());
 
     //then
     assertEquals(expected, result);
-    verify(repository).save(expected);
   }
 
   @Test
@@ -47,8 +41,9 @@ class BookRepositoryTest {
     //given
     Book firstBook = BookGenerator.getBook();
     Book secondBook = BookGenerator.getBook();
-    List<Book> expected = Arrays.asList(firstBook, secondBook);
-    when(repository.findAll()).thenReturn(expected);
+    Book addedFirstBook = repository.save(firstBook);
+    Book addedSecondBook = repository.save(secondBook);
+    List<Book> expected = Arrays.asList(addedFirstBook, addedSecondBook);
 
     //when
     List<Book> result = new ArrayList<>();
@@ -56,87 +51,105 @@ class BookRepositoryTest {
 
     //then
     assertEquals(expected, result);
-    verify(repository).findAll();
   }
 
   @Test
-  void shouldFindBookWithSpecifiedId() {
+  void shouldFindBookById() {
     //given
-    Book expected = BookGenerator.getBook();
-    when(repository.findById(expected.getId())).thenReturn(Optional.of(expected));
+    Book bookToFind = BookGenerator.getBook();
+    Book someBook = BookGenerator.getBook();
+    Book expected = repository.save(bookToFind);
+    repository.save(someBook);
 
     //when
     Optional<Book> result = repository.findById(expected.getId());
 
     //then
     assertEquals(expected, result.get());
-    verify(repository).findById(expected.getId());
   }
 
   @Test
   void shouldReturnTrueWhenBookExistById() {
     //given
-    Book expected = BookGenerator.getBook();
-    when(repository.existsById(expected.getId())).thenReturn(true);
+    Book book = BookGenerator.getBook();
+    long id = repository.save(book).getId();
 
     //when
-    boolean result = repository.existsById(expected.getId());
+    boolean result = repository.existsById(id);
 
     //then
     assertTrue(result);
-    verify(repository).existsById(expected.getId());
   }
 
   @Test
   void shouldReturnFalseWhenBookNotExistById() {
     //given
     long id = 1;
-    when(repository.existsById(id)).thenReturn(false);
 
     //when
     boolean result = repository.existsById(id);
 
     //then
     assertFalse(result);
-    verify(repository).existsById(id);
   }
 
   @Test
-  void shouldCountBooksInDatabase() {
+  void shouldCountBooksInDataBase() {
     //given
-    long expected = 5;
-    when(repository.count()).thenReturn(expected);
+    Book bookFirst = BookGenerator.getBook();
+    Book bookSecond = BookGenerator.getBook();
+    Book bookThird = BookGenerator.getBook();
+    repository.saveAll(Arrays.asList(bookFirst, bookSecond, bookThird));
+    long expected = 3;
 
     //when
     long result = repository.count();
 
     //then
     assertEquals(expected, result);
-    verify(repository).count();
   }
 
   @Test
   void shouldDeleteBookById() {
     //given
-    long id = 1;
-    doNothing().when(repository).deleteById(id);
+    Book bookToDelete = BookGenerator.getBook();
+    long id = repository.save(bookToDelete).getId();
 
     //when
     repository.deleteById(id);
+    boolean result = repository.existsById(id);
 
     //then
-    verify(repository).deleteById(id);
+    assertFalse(result);
   }
 
   @Test
   void shouldDeleteAllBooks() {
     //given
-    doNothing().when(repository).deleteAll();
+    Book bookFirst = BookGenerator.getBook();
+    Book bookSecond = BookGenerator.getBook();
+    Book bookThird = BookGenerator.getBook();
+    repository.saveAll(Arrays.asList(bookFirst, bookSecond, bookThird));
+    long expectedSize = 0;
 
     //when
     repository.deleteAll();
+    long result = repository.count();
 
     //then
-    verify(repository).deleteAll();
+    assertEquals(expectedSize, result);
+  }
+
+  @Test
+  void shouldPerformDeleteAllBooksMethodEvenIfDatabaseIsEmpty() {
+    //given
+    long expectedSize = 0;
+
+    //when
+    repository.deleteAll();
+    long result = repository.count();
+
+    //then
+    assertEquals(expectedSize, result);
   }
 }
