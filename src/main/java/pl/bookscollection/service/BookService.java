@@ -1,15 +1,13 @@
 package pl.bookscollection.service;
 
-import com.sun.xml.internal.bind.v2.TODO;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.bookscollection.database.BookRepository;
 import pl.bookscollection.model.Book;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
@@ -21,7 +19,7 @@ public class BookService {
     this.repository = repository;
   }
 
-  List<Book> getAllBooks() throws ServiceOperationException {
+  public List<Book> getAllBooks() throws ServiceOperationException {
     try {
       List<Book> result = new ArrayList<>();
       repository.findAll().forEach(result::add);
@@ -31,15 +29,15 @@ public class BookService {
     }
   }
 
-  Optional<Book> findBookById(long bookId) throws ServiceOperationException {
+  public Optional<Book> getBook(long bookId) throws ServiceOperationException {
     try {
       return repository.findById(bookId);
     } catch (Exception e) {
-      throw new ServiceOperationException("Error occurred during getting single book by id", e);
+      throw new ServiceOperationException(String.format("Error occurred during getting single book by id. Book id: %d", bookId), e);
     }
   }
 
-  Book saveBook(@NonNull Book book) throws ServiceOperationException {
+  public Book addBook(@NonNull Book book) throws ServiceOperationException {
     try {
       return repository.save(book);
     } catch (Exception e) {
@@ -47,5 +45,19 @@ public class BookService {
     }
   }
 
-  //Todo: tests for DB, we must know that DB can update Book. Waiting for task with tests
+  public void deleteAllBooks() throws ServiceOperationException {
+    try {
+      repository.deleteAll();
+    } catch (Exception e) {
+      throw new ServiceOperationException("An error occurred during deleting all books", e);
+    }
+  }
+
+  public void deleteBook(long bookId) throws ServiceOperationException {
+    try {
+      repository.deleteById(bookId);
+    } catch (Exception e) {
+      throw new ServiceOperationException(String.format("An error occurred during deleting book by id. Book id: %d", bookId), e);
+    }
+  }
 }
