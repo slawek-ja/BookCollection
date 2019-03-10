@@ -21,6 +21,7 @@ import pl.bookscollection.model.Book;
 @DataJpaTest
 @Rollback
 class BookRepositoryTest {
+
   @Autowired
   private BookRepository repository;
 
@@ -88,9 +89,8 @@ class BookRepositoryTest {
   @Test
   void shouldFindBookById() {
     //given
-    Book bookToFind = BookGenerator.getBook();
     Book someBook = BookGenerator.getBook();
-    Book expected = repository.save(bookToFind);
+    Book expected = repository.save(BookGenerator.getBook());
     repository.save(someBook);
 
     //when
