@@ -20,6 +20,7 @@
         <springBootStarter.version>2.1.2.RELEASE</springBootStarter.version>
         <posgre.version>42.2.5</posgre.version>
         <h2.version>1.4.197</h2.version>
+        <mockito.version>2.23.4</mockito.version>
     </properties>
 
     <dependencies>
@@ -71,7 +72,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>2.23.4</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
