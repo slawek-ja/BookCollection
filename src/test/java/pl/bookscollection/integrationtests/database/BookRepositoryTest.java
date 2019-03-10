@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import pl.bookscollection.database.BookRepository;
+import pl.bookscollection.generators.AuthorGenerator;
 import pl.bookscollection.generators.BookGenerator;
+import pl.bookscollection.model.Author;
 import pl.bookscollection.model.Book;
 
 import java.util.ArrayList;
@@ -18,7 +20,6 @@ import java.util.Optional;
 @DataJpaTest
 @Rollback
 class BookRepositoryTest {
-
   @Autowired
   private BookRepository repository;
 
@@ -34,6 +35,36 @@ class BookRepositoryTest {
 
     //then
     assertEquals(expected, result);
+  }
+
+  @Test
+  void shouldUpdateBook() {
+    //given
+    Book bookToUpdate = repository.save(BookGenerator.getBookWithSpecifiedTitle("Some title"));
+
+    //when
+    bookToUpdate.setTitle("Other title");
+    repository.save(bookToUpdate);
+    Optional<Book> result = repository.findById(bookToUpdate.getId());
+
+    //then
+    assertEquals(bookToUpdate, result.get());
+  }
+
+  @Test
+  void shouldUpdateAuthor() {
+    //given
+    Author authorToUpdate = AuthorGenerator.getAuthorWithSpecifiedName("John", "Fox");
+    Book book = repository.save(BookGenerator.getBookWithSpecifiedAuthor(authorToUpdate));
+
+    //when
+    book.getAuthor().setName("Steve");
+    book.getAuthor().setLastName("Rush");
+    repository.save(book);
+    Optional<Book> result = repository.findById(book.getId());
+
+    //then
+    assertEquals(book.getAuthor(), result.get().getAuthor());
   }
 
   @Test
