@@ -1,10 +1,16 @@
 package pl.bookscollection.unittests.database;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -14,11 +20,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import pl.bookscollection.database.BookRepository;
 import pl.bookscollection.generators.BookGenerator;
 import pl.bookscollection.model.Book;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @DataJpaTest
