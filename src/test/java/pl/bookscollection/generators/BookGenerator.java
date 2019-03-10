@@ -20,4 +20,10 @@ public class BookGenerator {
     book.setAuthor(author);
     return book;
   }
+
+  public static Book getBookWithSpecifiedTitle(String title) {
+    Book book = getBook();
+    book.setTitle(title);
+    return book;
+  }
 }
