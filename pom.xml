@@ -211,6 +211,7 @@
                                     </limits>
                                     <excludes>
                                         <exclude>pl.bookscollection.Application</exclude>
+                                        <exclude>pl.bookscollection.service.ServiceOperationException</exclude>
                                     </excludes>
                                 </rule>
                             </rules>
