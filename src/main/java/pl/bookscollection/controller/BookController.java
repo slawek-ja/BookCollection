@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.bookscollection.model.Book;
 import pl.bookscollection.service.BookService;
 
-
 @RestController
 @RequestMapping("/books/")
 @CrossOrigin
@@ -46,7 +45,7 @@ public class BookController {
       if (book.isPresent()) {
         return new ResponseEntity<>(book.get(), HttpStatus.OK);
       }
-      return new ResponseEntity<>(new Message("Book not found with passed id"), HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(new Message("Book not found with passed id."), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message(String.format("Internal server error while getting book by id: %d.", bookId)), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -58,7 +57,7 @@ public class BookController {
       Book addedBook = service.addBook(book);
       return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     } catch (Exception e) {
-      return new ResponseEntity<>(new Message("Internal server error while adding new book"), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new Message("Internal server error while adding new book."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -70,9 +69,9 @@ public class BookController {
         Book updatedBook = service.addBook(book);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
       }
-      return new ResponseEntity<>(new Message("Passed data is invalid. Please verify book id"), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new Message("Passed data is invalid. Please verify book id."), HttpStatus.BAD_REQUEST);
     } catch (Exception e) {
-      return new ResponseEntity<>(new Message("Internal server error while updating specified book"), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new Message("Internal server error while updating specified book."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -84,9 +83,9 @@ public class BookController {
         service.deleteBook(bookId);
         return new ResponseEntity<>(bookToDelete.get(), HttpStatus.OK);
       }
-      return new ResponseEntity<>(new Message("Book not found"), HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(new Message("Book not found."), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
-      return new ResponseEntity<>(new Message("Internal server error while deleting specified book"), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new Message("Internal server error while deleting specified book."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -94,9 +93,9 @@ public class BookController {
   public ResponseEntity<?> deleteAllBooks() {
     try {
       service.deleteAllBooks();
-      return new ResponseEntity<>(new Message("Deleted all books"), HttpStatus.OK);
+      return new ResponseEntity<>(new Message("Deleted all books."), HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<>(new Message("Internal server error while deleting all books"), HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(new Message("Internal server error while deleting all books."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

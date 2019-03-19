@@ -33,7 +33,6 @@ import pl.bookscollection.model.Book;
 import pl.bookscollection.service.BookService;
 import pl.bookscollection.service.ServiceOperationException;
 
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -63,7 +62,8 @@ class BookControllerTest {
     when(service.getAllBooks()).thenReturn(expectedBooks);
 
     //when
-    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, "")).contentType(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, "")))
+            .andReturn();
     List<Book> resultBooks = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Book>>() {
     });
     int resultStatus = result.getResponse().getStatus();
@@ -75,13 +75,14 @@ class BookControllerTest {
   }
 
   @Test
-  void shouldReturnInternalServerErrorDuringGettingAllBooksWhenSomethingWentWrongOnServer() throws Exception {
+  void shouldReturnInternalServerErrorStatusDuringGettingAllBooksWhenSomethingWentWrongOnServer() throws Exception {
     //given
     Message expectedMessage = new Message("Internal server error while getting books.");
     when(service.getAllBooks()).thenThrow(ServiceOperationException.class);
 
     //when
-    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, "")).contentType(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, "")))
+            .andReturn();
     Message resultMessage = mapper.readValue(result.getResponse().getContentAsString(), Message.class);
     int resultStatus = result.getResponse().getStatus();
 
@@ -94,29 +95,31 @@ class BookControllerTest {
   @Test
   void shouldGetSpecifiedBook() throws Exception {
     //given
-    Book expected = BookGenerator.getBookWithSpecifiedTitle("Sample title");
-    when(service.getBook(expected.getId())).thenReturn(Optional.of(expected));
+    Book expectedBook = BookGenerator.getBook();
+    when(service.getBook(expectedBook.getId())).thenReturn(Optional.of(expectedBook));
 
     //when
-    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, expected.getId()))).andReturn();
+    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, expectedBook.getId())))
+            .andReturn();
     Book resultBook = mapper.readValue(result.getResponse().getContentAsString(), Book.class);
     int resultStatus = result.getResponse().getStatus();
 
     //then
-    assertEquals(expected, resultBook);
+    assertEquals(expectedBook, resultBook);
     assertEquals(HttpStatus.OK.value(), resultStatus);
-    verify(service).getBook(expected.getId());
+    verify(service).getBook(expectedBook.getId());
   }
 
   @Test
   void shouldReturnNotFoundStatusWhenBookNotExisting() throws Exception {
     //given
     long id = 1;
-    Message expectedMessage = new Message("Book not found with passed id");
+    Message expectedMessage = new Message("Book not found with passed id.");
     when(service.getBook(id)).thenReturn(Optional.empty());
 
     //when
-    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, id))).andReturn();
+    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, id)))
+            .andReturn();
     Message resultMessage = mapper.readValue(result.getResponse().getContentAsString(), Message.class);
     int resultStatus = result.getResponse().getStatus();
 
@@ -127,14 +130,15 @@ class BookControllerTest {
   }
 
   @Test
-  void shouldReturnInternalServerErrorDuringGettingSpecifiedBookWhenSomethingWentWrongOnServer() throws Exception {
+  void shouldReturnInternalServerErrorStatusDuringGettingSpecifiedBookWhenSomethingWentWrongOnServer() throws Exception {
     //given
     long id = 1;
     Message expectedMessage = new Message(String.format("Internal server error while getting book by id: %d.", id));
     when(service.getBook(id)).thenThrow(ServiceOperationException.class);
 
     //when
-    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, id))).andReturn();
+    MvcResult result = mockMvc.perform(get(String.format(urlTemplate, id)))
+            .andReturn();
     Message resultMessage = mapper.readValue(result.getResponse().getContentAsString(), Message.class);
     int resultStatus = result.getResponse().getStatus();
 
@@ -168,11 +172,11 @@ class BookControllerTest {
   }
 
   @Test
-  void shouldReturnInternalServiceErrorDuringAddingBookWhenSomethingWentWrongOnServer() throws Exception {
+  void shouldReturnInternalServiceErrorStatusDuringAddingBookWhenSomethingWentWrongOnServer() throws Exception {
     //given
     Book bookToAdd = BookGenerator.getBook();
     String bookToAddAsJson = mapper.writeValueAsString(bookToAdd);
-    Message expectedMessage = new Message("Internal server error while adding new book");
+    Message expectedMessage = new Message("Internal server error while adding new book.");
     when(service.addBook(bookToAdd)).thenThrow(ServiceOperationException.class);
 
     //when
@@ -187,6 +191,7 @@ class BookControllerTest {
     //then
     assertEquals(expectedMessage, resultMessage);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), resultStatus);
+    verify(service).addBook(bookToAdd);
   }
 
   @Test
@@ -210,13 +215,14 @@ class BookControllerTest {
     assertEquals(expectedBook, resultBook);
     assertEquals(HttpStatus.OK.value(), resultStatus);
     verify(service).getBook(expectedBook.getId());
+    verify(service).addBook(expectedBook);
   }
 
   @Test
-  void shouldReturnBadRequestDuringUpdatingBookWithWrongId() throws Exception {
+  void shouldReturnBadRequestStatusDuringUpdatingBookWithWrongId() throws Exception {
     //given
     Book book = BookGenerator.getBookWithSpecifiedId(1);
-    Message expectedMessage = new Message("Passed data is invalid. Please verify book id");
+    Message expectedMessage = new Message("Passed data is invalid. Please verify book id.");
     String bookAsJson = mapper.writeValueAsString(book);
     when(service.getBook(book.getId())).thenReturn(Optional.empty());
 
@@ -236,10 +242,10 @@ class BookControllerTest {
   }
 
   @Test
-  void shouldThrowInternalServerErrorDuringUpdatingWhenSomethingWentWrongWithServer() throws Exception {
+  void shouldReturnInternalServerErrorStatusDuringUpdatingWhenSomethingWentWrongWithServer() throws Exception {
     //given
     Book book = BookGenerator.getBook();
-    Message expectedMessage = new Message("Internal server error while updating specified book");
+    Message expectedMessage = new Message("Internal server error while updating specified book.");
     String bookAsJson = mapper.writeValueAsString(book);
     when(service.getBook(book.getId())).thenThrow(ServiceOperationException.class);
 
@@ -283,11 +289,11 @@ class BookControllerTest {
   }
 
   @Test
-  void shouldReturnNotFoundDuringDeletingSpecifiedBookWithWrongId() throws Exception {
+  void shouldReturnNotFoundStatusDuringDeletingSpecifiedBookWithWrongId() throws Exception {
     //given
     long id = 1;
-    Message expectedMessage = new Message("Book not found");
-    when(service.getBook(id)).thenReturn(Optional.ofNullable(null));
+    Message expectedMessage = new Message("Book not found.");
+    when(service.getBook(id)).thenReturn(Optional.empty());
 
     //when
     MvcResult result = mockMvc.perform(delete(String.format(urlTemplate, id)))
@@ -302,10 +308,10 @@ class BookControllerTest {
   }
 
   @Test
-  void shouldThrowInternalServerErrorDuringDeletingSpecifiedBookWhenSomethingWentWrongWithServer() throws Exception {
+  void shouldReturnInternalServerErrorStatusDuringDeletingSpecifiedBookWhenSomethingWentWrongWithServer() throws Exception {
     //given
     long id = 1;
-    Message expectedMessage = new Message("Internal server error while deleting specified book");
+    Message expectedMessage = new Message("Internal server error while deleting specified book.");
     when(service.getBook(id)).thenThrow(ServiceOperationException.class);
 
     //when
@@ -323,7 +329,7 @@ class BookControllerTest {
   @Test
   void shouldDeleteAllBooks() throws Exception {
     //given
-    Message expectedMessage = new Message("Deleted all books");
+    Message expectedMessage = new Message("Deleted all books.");
     doNothing().when(service).deleteAllBooks();
 
     //when
@@ -339,9 +345,9 @@ class BookControllerTest {
   }
 
   @Test
-  void shouldThrowInternalServerErrorDuringDeletingAllBooksWhenSomethingWentWrongWithServer() throws Exception {
+  void shouldReturnInternalServerErrorStatusDuringDeletingAllBooksWhenSomethingWentWrongWithServer() throws Exception {
     //given
-    Message expectedMessage = new Message("Internal server error while deleting all books");
+    Message expectedMessage = new Message("Internal server error while deleting all books.");
     doThrow(ServiceOperationException.class).when(service).deleteAllBooks();
 
     //when
