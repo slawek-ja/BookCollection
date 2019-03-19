@@ -12,4 +12,5 @@ public class Message {
 
   @NonNull
   private String message;
+  
 }
