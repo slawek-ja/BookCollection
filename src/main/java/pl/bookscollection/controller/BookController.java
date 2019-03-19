@@ -1,5 +1,6 @@
 package pl.bookscollection.controller;
 
+import java.util.Optional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,12 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.bookscollection.model.Book;
 import pl.bookscollection.service.BookService;
-import pl.bookscollection.service.Message;
 
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/books/")
 @CrossOrigin
 public class BookController {
 
@@ -31,7 +30,7 @@ public class BookController {
     this.service = service;
   }
 
-  @GetMapping("/")
+  @GetMapping
   public ResponseEntity<?> getAllBooks() {
     try {
       return new ResponseEntity<>(service.getAllBooks(), HttpStatus.OK);
@@ -40,7 +39,7 @@ public class BookController {
     }
   }
 
-  @GetMapping("/{bookId}")
+  @GetMapping("{bookId}")
   public ResponseEntity<?> getBook(@PathVariable("bookId") long bookId) {
     try {
       Optional<Book> book = service.getBook(bookId);
@@ -63,11 +62,11 @@ public class BookController {
     }
   }
 
-  @PutMapping("/{bookId}")
+  @PutMapping("{bookId}")
   public ResponseEntity<?> updateBook(@RequestBody Book book) {
     try {
       Optional<Book> bookFromDatabase = service.getBook(book.getId());
-      if (bookFromDatabase.get().equals(book)) {
+      if (bookFromDatabase.isPresent() && bookFromDatabase.get().getId() == book.getId()) {
         Book updatedBook = service.addBook(book);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
       }
@@ -77,7 +76,7 @@ public class BookController {
     }
   }
 
-  @DeleteMapping("/{bookId}")
+  @DeleteMapping("{bookId}")
   public ResponseEntity<?> deleteBook(@PathVariable("bookId") long bookId) {
     try {
       Optional<Book> bookToDelete = service.getBook(bookId);
@@ -91,7 +90,7 @@ public class BookController {
     }
   }
 
-  @DeleteMapping("/deleteAll")
+  @DeleteMapping("deleteAll")
   public ResponseEntity<?> deleteAllBooks() {
     try {
       service.deleteAllBooks();
