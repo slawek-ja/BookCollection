@@ -1,5 +1,6 @@
 package pl.bookscollection.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,12 +19,15 @@ public class Author {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @ApiModelProperty(value = "The id of author", example = "17")
   long id;
 
   @Column(name = "author_name")
+  @ApiModelProperty(value = "The name of author", example = "Steve", required = true)
   private String name;
 
   @Column(name = "author_last_name")
+  @ApiModelProperty(value = "The last name of author", example = "Fox", required = true)
   private String lastName;
 
   public Author(@NonNull String name, @NonNull String lastName) {
