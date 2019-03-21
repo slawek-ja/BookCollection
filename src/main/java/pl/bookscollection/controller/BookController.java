@@ -1,6 +1,12 @@
 package pl.bookscollection.controller;
 
 import java.util.Optional;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.bookscollection.model.Book;
 import pl.bookscollection.service.BookService;
@@ -20,6 +27,7 @@ import pl.bookscollection.service.BookService;
 @RestController
 @RequestMapping("/books/")
 @CrossOrigin
+@Api(value = "Books", description = "Available operations for book collection application", tags = {"Books"})
 public class BookController {
 
   private BookService service;
@@ -30,6 +38,15 @@ public class BookController {
   }
 
   @GetMapping
+  @ApiOperation(
+          value = "Get all books.",
+          notes = "Get all books from database.",
+          response = Book.class,
+          responseContainer = "List")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK", response = Book.class),
+          @ApiResponse(code = 500, message = "Internal server error while getting books.", response = Message.class)
+  })
   public ResponseEntity<?> getAllBooks() {
     try {
       return new ResponseEntity<>(service.getAllBooks(), HttpStatus.OK);
@@ -39,7 +56,18 @@ public class BookController {
   }
 
   @GetMapping("{bookId}")
-  public ResponseEntity<?> getBook(@PathVariable("bookId") long bookId) {
+  @ApiOperation(
+          value = "Get book.",
+          notes = "Get specified books from database.",
+          response = Book.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK", response = Book.class),
+          @ApiResponse(code = 404, message = "Book not found with passed id.", response = Message.class),
+          @ApiResponse(code = 500, message = "Internal server error while getting book by id.", response = Message.class)
+  })
+  public ResponseEntity<?> getBook(
+          @ApiParam(value = "Id of specified book to be found", required = true)
+          @PathVariable("bookId") long bookId) {
     try {
       Optional<Book> book = service.getBook(bookId);
       if (book.isPresent()) {
@@ -52,7 +80,18 @@ public class BookController {
   }
 
   @PostMapping
-  public ResponseEntity<?> addBook(@RequestBody Book book) {
+  @ApiOperation(
+          value = "Add new book.",
+          notes = "Add new book to database.",
+          response = Book.class)
+  @ResponseStatus(HttpStatus.CREATED)
+  @ApiResponses(value = {
+          @ApiResponse(code = 201, message = "CREATED", response = Book.class),
+          @ApiResponse(code = 500, message = "Internal server error while adding new book.", response = Message.class)
+  })
+  public ResponseEntity<?> addBook(
+          @ApiParam(value = "Body of book to add in JSON format")
+          @RequestBody Book book) {
     try {
       Book addedBook = service.addBook(book);
       return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
@@ -61,8 +100,19 @@ public class BookController {
     }
   }
 
-  @PutMapping("{bookId}")
-  public ResponseEntity<?> updateBook(@RequestBody Book book) {
+  @PutMapping
+  @ApiOperation(
+          value = "Update book.",
+          notes = "Update existing book in database.",
+          response = Book.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK", response = Book.class),
+          @ApiResponse(code = 400, message = "Passed data is invalid. Please verify book id.", response = Message.class),
+          @ApiResponse(code = 500, message = "Internal server error while updating specified book.", response = Message.class)
+  })
+  public ResponseEntity<?> updateBook(
+          @ApiParam(value = "Body of book to update in JSON format", required = true)
+          @RequestBody Book book) {
     try {
       Optional<Book> bookFromDatabase = service.getBook(book.getId());
       if (bookFromDatabase.isPresent() && bookFromDatabase.get().getId() == book.getId()) {
@@ -76,7 +126,18 @@ public class BookController {
   }
 
   @DeleteMapping("{bookId}")
-  public ResponseEntity<?> deleteBook(@PathVariable("bookId") long bookId) {
+  @ApiOperation(
+          value = "Delete book.",
+          notes = "Delete specified book from database.",
+          response = Book.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK", response = Book.class),
+          @ApiResponse(code = 404, message = "Book not found.", response = Message.class),
+          @ApiResponse(code = 500, message = "Internal server error while deleting specified book.", response = Message.class)
+  })
+  public ResponseEntity<?> deleteBook(
+          @ApiParam(value = "Id of specified book to delete", required = true)
+          @PathVariable("bookId") long bookId) {
     try {
       Optional<Book> bookToDelete = service.getBook(bookId);
       if (bookToDelete.isPresent()) {
@@ -90,6 +151,14 @@ public class BookController {
   }
 
   @DeleteMapping("deleteAll")
+  @ApiOperation(
+          value = "Delete all books.",
+          notes = "Delete all books from database.",
+          response = Message.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Deleted all books.", response = Message.class),
+          @ApiResponse(code = 500, message = "Internal server error while deleting all books.", response = Message.class)
+  })
   public ResponseEntity<?> deleteAllBooks() {
     try {
       service.deleteAllBooks();
