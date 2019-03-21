@@ -203,7 +203,7 @@ class BookControllerTest {
     when(service.addBook(expectedBook)).thenReturn(expectedBook);
 
     //when
-    MvcResult result = mockMvc.perform(put(String.format(urlTemplate, expectedBook.getId()))
+    MvcResult result = mockMvc.perform(put(String.format(urlTemplate, ""))
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .content(expectedBookAsJson))
@@ -227,7 +227,7 @@ class BookControllerTest {
     when(service.getBook(book.getId())).thenReturn(Optional.empty());
 
     //when
-    MvcResult result = mockMvc.perform(put(String.format(urlTemplate, book.getId()))
+    MvcResult result = mockMvc.perform(put(String.format(urlTemplate, ""))
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .content(bookAsJson))
@@ -250,7 +250,7 @@ class BookControllerTest {
     when(service.getBook(book.getId())).thenThrow(ServiceOperationException.class);
 
     //when
-    MvcResult result = mockMvc.perform(put(String.format(urlTemplate, book.getId()))
+    MvcResult result = mockMvc.perform(put(String.format(urlTemplate, ""))
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .content(bookAsJson))
