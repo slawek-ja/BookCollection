@@ -1,12 +1,11 @@
 package pl.bookscollection.controller;
 
-import java.util.Optional;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import java.util.Optional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,8 +44,7 @@ public class BookController {
           responseContainer = "List")
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "OK", response = Book.class),
-          @ApiResponse(code = 500, message = "Internal server error while getting books.", response = Message.class)
-  })
+          @ApiResponse(code = 500, message = "Internal server error while getting books.", response = Message.class)})
   public ResponseEntity<?> getAllBooks() {
     try {
       return new ResponseEntity<>(service.getAllBooks(), HttpStatus.OK);
@@ -63,8 +61,7 @@ public class BookController {
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "OK", response = Book.class),
           @ApiResponse(code = 404, message = "Book not found with passed id.", response = Message.class),
-          @ApiResponse(code = 500, message = "Internal server error while getting book by id.", response = Message.class)
-  })
+          @ApiResponse(code = 500, message = "Internal server error while getting book by id.", response = Message.class)})
   public ResponseEntity<?> getBook(
           @ApiParam(value = "Id of specified book to be found", required = true)
           @PathVariable("bookId") long bookId) {
@@ -87,8 +84,7 @@ public class BookController {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(value = {
           @ApiResponse(code = 201, message = "CREATED", response = Book.class),
-          @ApiResponse(code = 500, message = "Internal server error while adding new book.", response = Message.class)
-  })
+          @ApiResponse(code = 500, message = "Internal server error while adding new book.", response = Message.class)})
   public ResponseEntity<?> addBook(
           @ApiParam(value = "Body of book to add in JSON format")
           @RequestBody Book book) {
@@ -108,8 +104,7 @@ public class BookController {
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "OK", response = Book.class),
           @ApiResponse(code = 400, message = "Passed data is invalid. Please verify book id.", response = Message.class),
-          @ApiResponse(code = 500, message = "Internal server error while updating specified book.", response = Message.class)
-  })
+          @ApiResponse(code = 500, message = "Internal server error while updating specified book.", response = Message.class)})
   public ResponseEntity<?> updateBook(
           @ApiParam(value = "Body of book to update in JSON format", required = true)
           @RequestBody Book book) {
@@ -133,8 +128,7 @@ public class BookController {
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "OK", response = Book.class),
           @ApiResponse(code = 404, message = "Book not found.", response = Message.class),
-          @ApiResponse(code = 500, message = "Internal server error while deleting specified book.", response = Message.class)
-  })
+          @ApiResponse(code = 500, message = "Internal server error while deleting specified book.", response = Message.class)})
   public ResponseEntity<?> deleteBook(
           @ApiParam(value = "Id of specified book to delete", required = true)
           @PathVariable("bookId") long bookId) {
@@ -157,8 +151,7 @@ public class BookController {
           response = Message.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Deleted all books.", response = Message.class),
-          @ApiResponse(code = 500, message = "Internal server error while deleting all books.", response = Message.class)
-  })
+          @ApiResponse(code = 500, message = "Internal server error while deleting all books.", response = Message.class)})
   public ResponseEntity<?> deleteAllBooks() {
     try {
       service.deleteAllBooks();
