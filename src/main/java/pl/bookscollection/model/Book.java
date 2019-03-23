@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +29,7 @@ public class Book {
   private long id;
 
   @Column(name = "book_title")
+  @NotBlank(message = "Title of the book cannot be empty")
   @ApiModelProperty(value = "The book title", example = "Design patterns", required = true)
   private String title;
 
