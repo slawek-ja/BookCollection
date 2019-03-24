@@ -123,4 +123,19 @@ class BookTest {
             Arguments.arguments("Some title"),
             Arguments.arguments("SampleTitle"));
   }
+
+  @Test
+  void shouldCatchInvalidArgumentsWhenAuthorNotPassedValidation() {
+    //given
+    Author author = new Author("", "");
+    Book bookToValidate = BookGenerator.getBookWithSpecifiedAuthor(author);
+    int expectedViolationsSize = 4;
+
+    //when
+    Set<ConstraintViolation<Book>> expectedViolations = validator.validate(bookToValidate);
+    int resultViolationsSize = expectedViolations.size();
+
+    //then
+    assertEquals(expectedViolationsSize, resultViolationsSize);
+  }
 }
