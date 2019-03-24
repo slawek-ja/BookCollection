@@ -26,17 +26,17 @@ public class Book {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @ApiModelProperty(value = "The id of book", example = "10")
+  @ApiModelProperty(value = "The id of book.", example = "10")
   private long id;
 
   @Column(name = "book_title")
-  @NotBlank(message = "Title of the book cannot be empty")
-  @ApiModelProperty(value = "The book title", example = "Design patterns", required = true)
+  @NotBlank(message = "Title of the book cannot be empty.")
+  @ApiModelProperty(value = "The book title.", example = "Design patterns", required = true)
   private String title;
 
   @Column(name = "book_cover_type")
   @Enumerated(value = EnumType.STRING)
-  @ApiModelProperty(value = "The type of book cover", example = "SOFT", required = true)
+  @ApiModelProperty(value = "The type of book cover.", example = "SOFT", required = true)
   private Cover cover;
 
   @Valid

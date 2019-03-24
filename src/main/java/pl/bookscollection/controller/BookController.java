@@ -104,7 +104,7 @@ public class BookController {
                 .iterator()
                 .next()
                 .getMessage();
-        return new ResponseEntity<>(String.format("Passed data is invalid. Problem: %s", errorMessage), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new Message(String.format("Passed data is invalid. Problem: %s", errorMessage)), HttpStatus.BAD_REQUEST);
       }
       Book addedBook = service.addBook(book);
       return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
@@ -132,7 +132,7 @@ public class BookController {
                 .iterator()
                 .next()
                 .getMessage();
-        return new ResponseEntity<>(String.format("Passed data is invalid. Problem: %s", errorMessage), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new Message(String.format("Passed data is invalid. Problem: %s", errorMessage)), HttpStatus.BAD_REQUEST);
       }
       Optional<Book> bookFromDatabase = service.getBook(book.getId());
       if (bookFromDatabase.isPresent() && bookFromDatabase.get().getId() == book.getId()) {

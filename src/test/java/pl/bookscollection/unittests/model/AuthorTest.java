@@ -94,7 +94,7 @@ class AuthorTest {
     //given
     Author authorToValidate = new Author(name, "Fox");
     int expectedViolationsSize = 1;
-    String expectedValidationMessage = "Invalid name, check passed data";
+    String expectedValidationMessage = "Invalid name, check passed data.";
 
     //when
     Set<ConstraintViolation<Author>> expectedViolations = validator.validate(authorToValidate);
@@ -121,7 +121,7 @@ class AuthorTest {
     //given
     Author authorToValidate = new Author("Steve", lastName);
     int expectedViolationsSize = 1;
-    String expectedValidationMessage = "Invalid last name, check passed data";
+    String expectedValidationMessage = "Invalid last name, check passed data.";
 
     //when
     Set<ConstraintViolation<Author>> expectedViolations = validator.validate(authorToValidate);

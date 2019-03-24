@@ -172,6 +172,27 @@ class BookControllerTest {
   }
 
   @Test
+  void shouldReturnBadRequestStatusDuringAddingBookWithWrongPassedData() throws Exception {
+    //given
+    Book book = BookGenerator.getBookWithSpecifiedTitle("");
+    Message expectedMessage = new Message("Passed data is invalid. Problem: Title of the book cannot be empty.");
+    String bookAsJson = mapper.writeValueAsString(book);
+
+    //when
+    MvcResult result = mockMvc.perform(post(String.format(urlTemplate, ""))
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .content(bookAsJson))
+            .andReturn();
+    Message resultMessage = mapper.readValue(result.getResponse().getContentAsString(), Message.class);
+    int resultStatus = result.getResponse().getStatus();
+
+    //then
+    assertEquals(expectedMessage, resultMessage);
+    assertEquals(HttpStatus.BAD_REQUEST.value(), resultStatus);
+  }
+
+  @Test
   void shouldReturnInternalServiceErrorStatusDuringAddingBookWhenSomethingWentWrongOnServer() throws Exception {
     //given
     Book bookToAdd = BookGenerator.getBook();
@@ -222,7 +243,7 @@ class BookControllerTest {
   void shouldReturnBadRequestStatusDuringUpdatingBookWithWrongId() throws Exception {
     //given
     Book book = BookGenerator.getBookWithSpecifiedId(1);
-    Message expectedMessage = new Message("Passed data is invalid. Please verify book id.");
+    Message expectedMessage = new Message("Passed data is invalid.");
     String bookAsJson = mapper.writeValueAsString(book);
     when(service.getBook(book.getId())).thenReturn(Optional.empty());
 
@@ -239,6 +260,27 @@ class BookControllerTest {
     assertEquals(expectedMessage, resultMessage);
     assertEquals(HttpStatus.BAD_REQUEST.value(), resultStatus);
     verify(service).getBook(book.getId());
+  }
+
+  @Test
+  void shouldReturnBadRequestStatusDuringUpdatingBookWithWrongPassedData() throws Exception {
+    //given
+    Book book = BookGenerator.getBookWithSpecifiedTitle("");
+    Message expectedMessage = new Message("Passed data is invalid. Problem: Title of the book cannot be empty.");
+    String bookAsJson = mapper.writeValueAsString(book);
+
+    //when
+    MvcResult result = mockMvc.perform(put(String.format(urlTemplate, ""))
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .content(bookAsJson))
+            .andReturn();
+    Message resultMessage = mapper.readValue(result.getResponse().getContentAsString(), Message.class);
+    int resultStatus = result.getResponse().getStatus();
+
+    //then
+    assertEquals(expectedMessage, resultMessage);
+    assertEquals(HttpStatus.BAD_REQUEST.value(), resultStatus);
   }
 
   @Test

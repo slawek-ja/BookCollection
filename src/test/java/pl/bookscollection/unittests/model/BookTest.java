@@ -4,6 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Set;
+import java.util.stream.Stream;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,12 +19,6 @@ import pl.bookscollection.generators.BookGenerator;
 import pl.bookscollection.model.Author;
 import pl.bookscollection.model.Book;
 import pl.bookscollection.model.Cover;
-import java.util.Set;
-import java.util.stream.Stream;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 class BookTest {
 
@@ -85,7 +85,7 @@ class BookTest {
     //given
     Book bookToValidate = BookGenerator.getBookWithSpecifiedTitle(title);
     int expectedViolationsSize = 1;
-    String expectedValidationMessage = "Title of the book cannot be empty";
+    String expectedValidationMessage = "Title of the book cannot be empty.";
 
     //when
     Set<ConstraintViolation<Book>> expectedViolations = validator.validate(bookToValidate);
