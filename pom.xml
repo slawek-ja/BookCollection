@@ -22,6 +22,7 @@
         <h2.version>1.4.197</h2.version>
         <mockito.version>2.23.4</mockito.version>
         <swagger.version>2.9.2</swagger.version>
+        <hibernateValidator.version>6.0.16.Final</hibernateValidator.version>
     </properties>
 
     <dependencies>
@@ -126,7 +127,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.0.16.Final</version>
+            <version>${hibernateValidator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
