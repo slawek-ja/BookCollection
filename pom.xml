@@ -128,7 +128,6 @@
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.16.Final</version>
         </dependency>
-        <!--TODO: Check if below dependency is really necessary-->
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
