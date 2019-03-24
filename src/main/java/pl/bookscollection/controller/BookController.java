@@ -5,7 +5,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import java.util.Optional;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +36,8 @@ import pl.bookscollection.service.BookService;
 public class BookController {
 
   private BookService service;
+  private ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+  private Validator validator = factory.getValidator();
 
   @Autowired
   public BookController(@NonNull BookService service) {
@@ -84,11 +92,20 @@ public class BookController {
   @ResponseStatus(HttpStatus.CREATED)
   @ApiResponses(value = {
           @ApiResponse(code = 201, message = "CREATED", response = Book.class),
+          @ApiResponse(code = 400, message = "Passed data is invalid.", response = Message.class),
           @ApiResponse(code = 500, message = "Internal server error while adding new book.", response = Message.class)})
   public ResponseEntity<?> addBook(
           @ApiParam(value = "Body of book to add in JSON format")
           @RequestBody Book book) {
     try {
+      Set<ConstraintViolation<Book>> violationsChecker = validator.validate(book);
+      if (violationsChecker.size() > 0) {
+        String errorMessage = violationsChecker
+                .iterator()
+                .next()
+                .getMessage();
+        return new ResponseEntity<>(String.format("Passed data is invalid. Problem: %s", errorMessage), HttpStatus.BAD_REQUEST);
+      }
       Book addedBook = service.addBook(book);
       return new ResponseEntity<>(addedBook, HttpStatus.CREATED);
     } catch (Exception e) {
@@ -103,18 +120,26 @@ public class BookController {
           response = Book.class)
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "OK", response = Book.class),
-          @ApiResponse(code = 400, message = "Passed data is invalid. Please verify book id.", response = Message.class),
+          @ApiResponse(code = 400, message = "Passed data is invalid.", response = Message.class),
           @ApiResponse(code = 500, message = "Internal server error while updating specified book.", response = Message.class)})
   public ResponseEntity<?> updateBook(
           @ApiParam(value = "Body of book to update in JSON format", required = true)
           @RequestBody Book book) {
     try {
+      Set<ConstraintViolation<Book>> violationsChecker = validator.validate(book);
+      if (violationsChecker.size() > 0) {
+        String errorMessage = violationsChecker
+                .iterator()
+                .next()
+                .getMessage();
+        return new ResponseEntity<>(String.format("Passed data is invalid. Problem: %s", errorMessage), HttpStatus.BAD_REQUEST);
+      }
       Optional<Book> bookFromDatabase = service.getBook(book.getId());
       if (bookFromDatabase.isPresent() && bookFromDatabase.get().getId() == book.getId()) {
         Book updatedBook = service.addBook(book);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
       }
-      return new ResponseEntity<>(new Message("Passed data is invalid. Please verify book id."), HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(new Message("Passed data is invalid."), HttpStatus.BAD_REQUEST);
     } catch (Exception e) {
       return new ResponseEntity<>(new Message("Internal server error while updating specified book."), HttpStatus.INTERNAL_SERVER_ERROR);
     }

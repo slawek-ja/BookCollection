@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
@@ -38,6 +39,7 @@ public class Book {
   @ApiModelProperty(value = "The type of book cover", example = "SOFT", required = true)
   private Cover cover;
 
+  @Valid
   @ManyToOne(cascade = CascadeType.ALL)
   private Author author;
 
